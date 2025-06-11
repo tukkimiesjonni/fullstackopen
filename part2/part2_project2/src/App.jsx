@@ -1,5 +1,18 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
+import './index.css'
+
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="error">
+      {message}
+    </div>
+  )
+}
 
 const Person = (props) => {
   return (
@@ -64,6 +77,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -94,6 +108,12 @@ const App = () => {
         .remove(id)
         .then(() => {
           setPersons(persons.filter(person => person.id !== id))
+          setErrorMessage(
+            `${person.name} deleted from the phonebook`
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
         })
     }
   }
@@ -118,6 +138,12 @@ const App = () => {
             setPersons(persons.map(person => person.id !== personExists.id ? person : updatedPerson))
             setNewName('')
             setNewNumber('')
+            setErrorMessage(
+              `${personObject.name}s number updated`
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
           })
       }
     } 
@@ -134,6 +160,12 @@ const App = () => {
         setPersons(persons.concat(newPerson))
         setNewName('')
         setNewNumber('')
+        setErrorMessage(
+        `${personObject.name} added to phonebook`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
       })
     }
   }
@@ -145,6 +177,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage}/>
       <FilterForm newFilter={newFilter} handleFilterChange={handleFilterChange} />
       <h2>Add a new contact</h2>
       <PersonForm
