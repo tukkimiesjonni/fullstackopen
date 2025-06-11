@@ -2,17 +2,16 @@ import { useState, useEffect } from 'react'
 import personService from './services/persons'
 import './index.css'
 
-const Notification = ({ message }) => {
-  if (message === null) {
-    return null
-  }
+const Notification = ({ message, type }) => {
+  if (message === null) return null
 
   return (
-    <div className="error">
+    <div className={type === 'success' ? 'success' : 'error'}>
       {message}
     </div>
   )
 }
+
 
 const Person = (props) => {
   return (
@@ -78,6 +77,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
+  const [messageType, setMessageType] = useState('success')
 
   useEffect(() => {
     personService
@@ -108,6 +108,7 @@ const App = () => {
         .remove(id)
         .then(() => {
           setPersons(persons.filter(person => person.id !== id))
+          setMessageType("success")
           setErrorMessage(
             `${person.name} deleted from the phonebook`
           )
@@ -115,6 +116,15 @@ const App = () => {
             setErrorMessage(null)
           }, 5000)
         })
+        .catch(error =>
+          setMessageType("error"),
+          setErrorMessage(
+            "Error deleting contact"
+          ),
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        )
     }
   }
 
@@ -138,6 +148,7 @@ const App = () => {
             setPersons(persons.map(person => person.id !== personExists.id ? person : updatedPerson))
             setNewName('')
             setNewNumber('')
+            setMessageType("success")
             setErrorMessage(
               `${personObject.name}s number updated`
             )
@@ -145,6 +156,15 @@ const App = () => {
               setErrorMessage(null)
             }, 5000)
           })
+          .catch(error =>
+            setMessageType("error"),
+            setErrorMessage(
+            "Error updating contact"
+          ),
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        )
       }
     } 
 
@@ -160,6 +180,7 @@ const App = () => {
         setPersons(persons.concat(newPerson))
         setNewName('')
         setNewNumber('')
+        setMessageType("success")
         setErrorMessage(
         `${personObject.name} added to phonebook`
         )
@@ -167,6 +188,15 @@ const App = () => {
           setErrorMessage(null)
         }, 5000)
       })
+      .catch(error =>
+        setMessageType("error"),
+        setErrorMessage(
+          "Error creating a new contact"
+        ),
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      )
     }
   }
 
@@ -177,7 +207,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={errorMessage}/>
+      <Notification message={errorMessage} type={messageType}/>
       <FilterForm newFilter={newFilter} handleFilterChange={handleFilterChange} />
       <h2>Add a new contact</h2>
       <PersonForm
