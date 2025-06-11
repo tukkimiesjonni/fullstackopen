@@ -21,19 +21,14 @@
       "id": "4"
     },
     {
-      "id": "be86",
       "name": "maija",
-      "number": "123456789"
+      "number": "12345",
+      "id": "be86"
     },
     {
-      "id": "13f6",
-      "name": "Maikki",
-      "number": "12345"
-    },
-    {
-      "id": "d11c",
-      "name": "Maikkii",
-      "number": "12345"
+      "name": "Maija",
+      "number": "111",
+      "id": "120d"
     }
   ]
 }

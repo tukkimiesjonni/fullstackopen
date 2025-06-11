@@ -34,7 +34,7 @@ const PersonForm = ({ addPerson, newName, handleNameChange, newNumber, handleNum
         />
       </div>
       <div>
-        <button type="submit">add</button>
+        <button type="submit">Add contact</button>
       </div>
     </form>
   )
@@ -85,27 +85,44 @@ const App = () => {
     setNewFilter(event.target.value)
   }
 
-const deletePerson = (id) => {
-  const person = persons.find(p => p.id === id)
-  const confirm = window.confirm(`Delete ${person.name}?`)
+  const deletePerson = (id) => {
+    const person = persons.find(p => p.id === id)
+    const confirm = window.confirm(`Delete ${person.name}?`)
 
-  if (confirm) {
-    personService
-      .remove(id)
-      .then(() => {
-        setPersons(persons.filter(p => p.id !== id))
-      })
+    if (confirm) {
+      personService
+        .remove(id)
+        .then(() => {
+          setPersons(persons.filter(person => person.id !== id))
+        })
+    }
   }
-}
 
   const addPerson = (event) => {
     event.preventDefault()
 
-    const nameExists = persons.some(person => person.name === newName)
+    const personExists = persons.find(person => person.name === newName)
 
-    if (nameExists) {
-      alert(`${newName} is already added to phonebook`)
-    } else {
+    if (personExists) {
+      const confirm = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
+      
+      if (confirm) {
+        const personObject = {
+          name: newName,
+          number: newNumber
+        }
+
+        personService
+          .update(personExists.id, personObject)
+          .then(updatedPerson => {
+            setPersons(persons.map(person => person.id !== personExists.id ? person : updatedPerson))
+            setNewName('')
+            setNewNumber('')
+          })
+      }
+    } 
+
+    else {
       const personObject = {
         name: newName,
         number: newNumber
