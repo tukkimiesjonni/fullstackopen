@@ -13,13 +13,19 @@ const FilterForm = ({ newFilter, handleFilterChange }) => {
   )
 }
 
+const Button = ({ onClick }) => {
+  return (
+    <button onClick={onClick}>Show</button>
+  )
+}
+
 const Country = ({ country }) => {
   return (
     <div>
       <div>
         <h1>{country.name.common}</h1>
-        <p>{country.capital}</p>
-        <p>{country.area}</p>
+        <p>Capital: {country.capital.join(', ')}</p>
+        <p>Area: {country.area}</p>
       </div>
       <div>
         <h3>Languages</h3>
@@ -34,50 +40,60 @@ const Country = ({ country }) => {
           src={country.flags.png}
           alt={country.flags.alt}
           width="200"
-      />
+        />
       </div>
     </div>
   )
 }
 
-const Countries = ({ countries }) => {
+const Countries = ({ countries, selectedCountry, setSelectedCountry }) => {
   if (countries.length > 10) {
     return <p>Too many matches, add a more specific filter</p>
+  }
 
-  } else if (countries.length > 1) {
+  if (selectedCountry) {
+    return (
+      <div>
+        <button onClick={() => setSelectedCountry(null)}>Back to list</button>
+        <Country country={selectedCountry} />
+      </div>
+    )
+  }
+
+  if (countries.length > 1) {
     return (
       <ul>
         {countries.map((country) => (
-          <li key={country.name.common}>{country.name.common}</li>
+          <li key={country.name.common}>
+            {country.name.common}{' '}
+            <Button onClick={() => setSelectedCountry(country)} />
+          </li>
         ))}
       </ul>
-    );
-
+    )
   } else if (countries.length === 1) {
-    return <Country country={countries[0]} />;
-    
+    return <Country country={countries[0]} />
   } else {
-    return <p>No matches found.</p>;
+    return <p>No matches found.</p>
   }
-};
-
+}
 
 const App = () => {
   const [newFilter, setNewFilter] = useState('')
   const [countries, setCountries] = useState([])
+  const [selectedCountry, setSelectedCountry] = useState(null)
 
   useEffect(() => {
     countryService
       .getAll()
       .then(initialCountries => {
-        console.log(initialCountries)
         setCountries(initialCountries)
       })
   }, [])
 
   const handleFilterChange = (event) => {
-    console.log(event.target.value)
     setNewFilter(event.target.value)
+    setSelectedCountry(null)
   }
 
   const filterCountries = countries.filter(country =>
@@ -87,10 +103,13 @@ const App = () => {
   return (
     <div>
       <FilterForm newFilter={newFilter} handleFilterChange={handleFilterChange} />
-      <Countries countries={filterCountries} />
+      <Countries
+        countries={filterCountries}
+        selectedCountry={selectedCountry}
+        setSelectedCountry={setSelectedCountry}
+      />
     </div>
   )
-
 }
 
 export default App
