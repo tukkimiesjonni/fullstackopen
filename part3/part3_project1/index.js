@@ -86,7 +86,20 @@ app.post('/api/persons', (request, response) => {
 
   if (!body.name) {
     return response.status(400).json({ 
-      error: 'content missing' 
+      error: 'name missing' 
+    })
+  }
+
+  const nameExists = persons.some(person => person.name === body.name)
+  if (nameExists) {
+    return response.status(400).json({
+      error: 'name already in phonebook'
+    })
+  }
+
+  if (!body.number) {
+    return response.status(400).json({ 
+      error: 'number missing' 
     })
   }
 
@@ -129,6 +142,12 @@ app.post('/api/notes', (request, response) => {
   if (!body.content) {
     return response.status(400).json({ 
       error: 'content missing' 
+    })
+  }
+
+  if (!body.important) {
+    return response.status(400).json({ 
+      error: 'important missing' 
     })
   }
 
