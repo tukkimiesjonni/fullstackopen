@@ -45,6 +45,8 @@ let notes = [
   }
 ]
 
+// API INFO
+
 app.get('/api/info', (request, response) => {
   const count = persons.length
   const time = new Date 
@@ -52,21 +54,7 @@ app.get('/api/info', (request, response) => {
     `<p>Phonebook has info for ${count} people</p>\n<p>${time}</p>`)
 })
 
-app.get('/api/notes', (request, response) => {
-  response.json(notes)
-})
-
-app.get('/api/notes/:id', (request, response) => {
-  const id = request.params.id
-  const note = notes.find(note => note.id === id)
-  
-
-  if (note) {
-    response.json(note)
-  } else {
-    response.status(404).end()
-  }
-})
+// API PERSONS BEGIN
 
 app.get('/api/persons', (request, response) => {
   response.json(persons)
@@ -86,6 +74,14 @@ app.get('/api/persons/:id', (request, response) => {
   response.json(person)
 })
 
+app.delete('/api/persons/:id', (request, response) => {
+  const id = request.params.id
+  persons = persons.filter(note => note.id !== id)
+
+  response.status(204).end()
+})
+
+// GENERATEID
 
 const generateId = () => {
   const maxId = notes.length > 0
@@ -93,6 +89,24 @@ const generateId = () => {
     : 0
   return String(maxId + 1)
 }
+
+// API NOTES BEGIN
+
+app.get('/api/notes', (request, response) => {
+  response.json(notes)
+})
+
+app.get('/api/notes/:id', (request, response) => {
+  const id = request.params.id
+  const note = notes.find(note => note.id === id)
+  
+
+  if (note) {
+    response.json(note)
+  } else {
+    response.status(404).end()
+  }
+})
 
 app.post('/api/notes', (request, response) => {
   const body = request.body
@@ -120,6 +134,8 @@ app.delete('/api/notes/:id', (request, response) => {
 
   response.status(204).end()
 })
+
+// PORT
 
 const PORT = 3001
 app.listen(PORT, () => {
