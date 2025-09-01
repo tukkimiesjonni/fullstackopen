@@ -45,6 +45,13 @@ let notes = [
   }
 ]
 
+app.get('/api/info', (request, response) => {
+  const count = persons.length
+  const time = new Date 
+  response.send(
+    `<p>Phonebook has info for ${count} people</p>\n<p>${time}</p>`)
+})
+
 app.get('/api/notes', (request, response) => {
   response.json(notes)
 })
