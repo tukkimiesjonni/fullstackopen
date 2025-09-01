@@ -81,14 +81,29 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end()
 })
 
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+
+  if (!body.name) {
+    return response.status(400).json({ 
+      error: 'content missing' 
+    })
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number || false,
+    id: generateId(),
+  }
+
+  persons = persons.concat(person)
+
+  response.json(person)
+})
+
 // GENERATEID
 
-const generateId = () => {
-  const maxId = notes.length > 0
-    ? Math.max(...notes.map(n => Number(n.id)))
-    : 0
-  return String(maxId + 1)
-}
+const generateId = () => Math.floor(Math.random() * 1000000)
 
 // API NOTES BEGIN
 
@@ -97,7 +112,7 @@ app.get('/api/notes', (request, response) => {
 })
 
 app.get('/api/notes/:id', (request, response) => {
-  const id = request.params.id
+  const id = Number(request.params.id)
   const note = notes.find(note => note.id === id)
   
 
