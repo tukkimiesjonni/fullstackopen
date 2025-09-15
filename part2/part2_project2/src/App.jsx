@@ -116,7 +116,7 @@ const App = () => {
             setErrorMessage(null)
           }, 5000)
         })
-        .catch(error =>
+        .catch(error => {
           setMessageType("error"),
           setErrorMessage(
             "Error deleting contact"
@@ -124,7 +124,7 @@ const App = () => {
           setTimeout(() => {
             setErrorMessage(null)
           }, 5000)
-        )
+        })
     }
   }
 
@@ -156,7 +156,7 @@ const App = () => {
               setErrorMessage(null)
             }, 5000)
           })
-          .catch(error =>
+          .catch(error => {
             setMessageType("error"),
             setErrorMessage(
             "Error updating contact"
@@ -164,7 +164,7 @@ const App = () => {
           setTimeout(() => {
             setErrorMessage(null)
           }, 5000)
-        )
+          })
       }
     } 
 
@@ -188,7 +188,7 @@ const App = () => {
           setErrorMessage(null)
         }, 5000)
       })
-      .catch(error =>
+      .catch(error => {
         setMessageType("error"),
         setErrorMessage(
           "Error creating a new contact"
@@ -196,7 +196,7 @@ const App = () => {
         setTimeout(() => {
           setErrorMessage(null)
         }, 5000)
-      )
+      })
     }
   }
 
