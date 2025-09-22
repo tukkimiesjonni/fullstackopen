@@ -191,7 +191,7 @@ const App = () => {
       .catch(error => {
         setMessageType("error"),
         setErrorMessage(
-          "Error creating a new contact"
+          error.response.data.error
         ),
         setTimeout(() => {
           setErrorMessage(null)
